@@ -29,7 +29,7 @@ Note that there are two further connections that are not documented but visible
 on the board (see map below):  CS and INT.  These are both crucial to effective
 use of the CAN bus.
 
-'''
+```
 Exp. board                         Exp. board
 header--+   +-Raspberry PI pico-+   +--header
         |   |                   |   |
@@ -59,7 +59,7 @@ header--+   +-Raspberry PI pico-+   +--header
 
                          O INT
                          O CS
-'''
+```
 
 This board is based on the [MCP2515 CAN controller](https://ww1.microchip.com/downloads/en/DeviceDoc/MCP2515-Stand-Alone-CAN-Controller-with-SPI-20001801J.pdf).
 The MCP2515 uses an SPI bus to interact with the RPP.
