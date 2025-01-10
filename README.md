@@ -210,6 +210,11 @@ Interrupt mask is a3
 
 ## Notes
 
+- Tested with
+```
+MicroPython v1.24.1 on 2024-11-29; Raspberry Pi Pico W with RP2040
+```
+
 - Some MCP2515 clones apparently do not report the interface status
 correctly (see the message `***should be 40 [loopback mode]; ignoring***`).
 For the test program, this is harmless.
