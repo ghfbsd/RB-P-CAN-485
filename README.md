@@ -229,8 +229,8 @@ own input, and therefore you don't need to have a running CAN bus to hook
 into to test out the board.
 
 In synchronous/polling mode, the program creates a CAN message and sends it.
-It pays no attention to the result except to check that it was transmitted
-without an error.
+The program pays no attention to whether it was received; it only checks that
+the message was transmitted without an error.
 
 The program's operation in interrupt mode is more interesting.
 First, it defines a Python function called `trigger` to be called whenever
