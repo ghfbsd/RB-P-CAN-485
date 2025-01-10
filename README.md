@@ -24,6 +24,9 @@ You can get the updated code from the
 
 The board's documentation tells you how to use the external connections for
 USB, power, CAN and 485 I/O.  Refer to that material for details.
+USB power to either the board or to the RPP will run both.
+However, only the RPP USB connection will talk to your computer's
+development platform/IDE, so use that one.
 
 Note that there are two further connections that are not documented but visible
 on the board (see map below):  CS and INT.  These are both crucial to effective
@@ -75,8 +78,8 @@ The board exposes the SPI lines as follows:
 
 Due to there being no connection of the CS line to any header/socket on the RPP,
 the board is unusable as a CAN interface as delivered.
-With a few short wire jumpers installed, it will work.
-Connect
+With a few short wire jumpers installed, it *will* work, however.
+Connect them as follows:
 
 - pin 24 (GP18) -> pin 4 (GP2): SCK line
 - pin 25 (GP19) -> pin 5 (GP3): SI line
@@ -212,3 +215,28 @@ correctly (see the message `***should be 40 [loopback mode]; ignoring***`).
 For the test program, this is harmless.
 
 - The program runs forever; you must interrupt it to stop it.
+
+# How it works
+
+Firstly, the test program configures the CAN interface by putting it into
+_loopback mode_.  This essentially connects the output of the bus to its
+own input, and therefore you don't need to have a running CAN bus to hook
+into to test out the board.
+
+In synchronous/polling mode, the program creates a CAN message and sends it.
+It pays no attention to the result except to check that it was transmitted
+without an error.
+
+The program's operation in interrupt mode is more interesting.
+First, it defines a Python function called `trigger` to be called whenever
+there is new data received on the CAN bus.
+Then the program makes CAN messages of various lengths ranging from 0 to 8
+bytes, sending them out and listening for the result.
+When a message is available to be read, the interrupt causes `trigger` to
+be called, which dumps the content of the message.
+The program shows the received message and its payload after each
+interrupt.
+Due to the loopback interface, it actually *receives* the message before it
+knows whether it was *sent* properly.
+(If it isn't sent properly, the program will complain and you probably
+won't see the message either.)
