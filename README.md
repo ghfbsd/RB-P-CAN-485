@@ -18,7 +18,7 @@ I extended the code to expand its diagnostic and operation capabilities.
 You can get the updated code from the
 [MicroPython_CAN_BUS_MCP2515](https://github.com/ghfbsd/MicroPython_CAN_BUS_MCP2515) repository, which is imported under the *canbus* name in Python.
 (For reference, the original Longlan Labs version is
-[here](https://www.longan-labs.cc/1030014.html).)
+[here](https://github.com/Longan-Labs/MicroPython_CAN_BUS_MCP2515).)
 
 ## Connections
 
@@ -74,8 +74,9 @@ The board exposes the SPI lines as follows:
 - CS on the board hole labeled "CS"
 
 Due to there being no connection of the CS line to any header/socket on the RPP,
-the board is unusable as delivered.
-Using it requires short wire jumpers to be installed, as follows
+the board is unusable as a CAN interface as delivered.
+With a few short wire jumpers installed, it will work.
+Connect
 
 - pin 24 (GP18) -> pin 4 (GP2): SCK line
 - pin 25 (GP19) -> pin 5 (GP3): SI line
@@ -83,6 +84,11 @@ Using it requires short wire jumpers to be installed, as follows
 - CS hole -> pin 11 (GP9): CS line
 - INT hole -> pin 20 (GP15): interrupt line
 
+These jumper the SPI bus lines to the GPIO pins expected by the *canbus*
+library.
+*canbus* is agnostic about interrupt-driven MC2515 use, so the interrupt
+pin's jumper connection is your choice; 15 is used here (see the `INT_PIN`
+value in `can_test_int.py` for its definition).
 Now the board is ready for use with the RPP.
 
 ## Preparation
@@ -110,7 +116,7 @@ Look at the source code and make sure the `POLL` variable has the value `True`.
 If not, change it and save the updated code.
 
 * Download `can_test_intr.py` to the RPP (with _rshell_ use `cp`;
-not sure what to do for __Thonny_).
+not sure what to do for _Thonny_).
 
 * Run `can_test_intr.py`.
 Compare your output with the sample output below.
@@ -198,3 +204,11 @@ Interrupt mask is a3
     CAN id: 0x12345678 (EFF) (1 bytes): 12
  ...
 ```
+
+## Notes
+
+- Some MCP2515 clones apparently do not report the interface status
+correctly (see the message `***should be 40 [loopback mode]; ignoring***`).
+For the test program, this is harmless.
+
+- The program runs forever; you must interrupt it to stop it.
