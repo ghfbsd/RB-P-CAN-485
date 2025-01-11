@@ -240,9 +240,9 @@ own input, and therefore you don't need to have a running CAN bus to hook
 into to test out the board.
 
 In synchronous/polling mode, the program creates a CAN message and sends it.
-It checks that the message was transmitted without an error, and then
+The code checks that the message was transmitted without an error, and then
 expects it to appear on the loopback connection as a new input message,
-which it dumps along with its payload.
+which the code dumps along with the message payload.
 
 The program's operation in interrupt mode is more interesting.
 First, it defines a Python function called `trigger` to be called whenever
@@ -250,7 +250,7 @@ there is new data received on the CAN bus.
 Then the program makes CAN messages of various lengths ranging from 0 to 8
 bytes, sending them out and listening for the result.
 When a message is available to be read, the interrupt causes `trigger` to
-be called, which dumps the content of the message.
+be called, which does the read and dumps the content of the message.
 The program shows the received message and its payload after each
 interrupt.
 Due to the loopback interface, it actually *receives* the message before it
