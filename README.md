@@ -108,9 +108,6 @@ Now the board is ready for use with the RPP.
 `cd MicroPython_CAN_BUS_MCP2515`; with _Thonny_, use
 the `Tools -> Manage Packages menu`, search for "MicroPython_CAN_BUS_MCP2515" and install it to the target board).
 
-* Download the *picozero* Python package to your RPP.
-You can get *picozero* [here](https://projects.raspberrypi.org/en/projects/introduction-to-the-pico/4).
-
 * Look at the `can_test_intr.py` source code.
 There are two ways of running the CAN bus:
 synchronously/polling or interrupt-driven.

@@ -4,7 +4,6 @@
 
 # Import necessary libraries
 import sys, time
-from picozero import pico_temp_sensor, pico_led
 from canbus import Can, CanError, CanMsg, CanMsgFlag
 from machine import Pin
 
@@ -12,6 +11,7 @@ POLL = True                # True for polling, False for interrupt
 
 INT_PIN = 15
 
+pico_led = Pin("LED")
 pico_led.off()
 #                          # INT comes from "INT" hole in board, goes to INT_PIN
 #                          # CS comes from "CS" hole in board, goes to GPIO9
