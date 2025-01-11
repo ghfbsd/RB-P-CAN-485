@@ -8,7 +8,7 @@ The CAN bus is the main focus of this repository.
 The documentation for this board is incomplete.
 This describes how I was able to set one up and get it to work with a CAN bus.
 
-Driving the CAN and RS485 interfaces with MicroPython requires a Python library.
+Driving the CAN and RS485 interfaces with [MicroPython](https://micropython.org/download/) requires a Python library.
 The board's documentation reports that it is available from Longlan Labs, and
 gives examples of its use; the RS485 example works immediately.
 The CAN bus use example does not work because the code makes assumptions about
