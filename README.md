@@ -249,7 +249,6 @@ First, it defines a Python function called `trigger` to be called whenever
 there is new data received on the CAN bus.
 Then the program makes CAN messages of various lengths ranging from 0 to 8
 bytes, sending them out and listening for the result.
-pin.irq(trigger=Pin.IRQ_FALLING,handler=trigger)
 When a message is available to be read, board signals the RPP by dropping
 the level on the INT line, which is detected by using MicroPython's
 `irq()` method in the `Pin` connected to INT.
