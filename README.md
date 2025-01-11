@@ -91,7 +91,7 @@ These jumper the SPI bus lines to the GPIO pins expected by the *canbus*
 library.
 *canbus* is agnostic about interrupt-driven MC2515 use, so the interrupt
 pin's jumper connection is your choice; 15 is used here (see the `INT_PIN`
-value in `can_test_int.py` for its definition).
+value in `can_test_intr.py` for its definition).
 Now the board is ready for use with the RPP.
 
 ## Preparation
@@ -215,6 +215,9 @@ MicroPython v1.24.1 on 2024-11-29; Raspberry Pi Pico W with RP2040
 - Some MCP2515 clones apparently do not report the interface status
 correctly (see the message `***should be 40 [loopback mode]; ignoring***`).
 For the test program, this is harmless.
+
+- Modify the program and set `POLL` to `False` to test the interrupt features
+of the expansion board (and download it to the RPP).
 
 - The program runs forever; you must interrupt it to stop it.
 
