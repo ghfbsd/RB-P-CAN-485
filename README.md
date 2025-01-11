@@ -76,23 +76,29 @@ The board exposes the SPI lines as follows:
 - SO on pin 21 (GP16)
 - CS on the board hole labeled "CS"
 
+(These may be verified by examining the traces on the PCB board and where they
+connect to the MCP2515.)
+
 Due to there being no connection of the CS line to any header/socket on the RPP,
 the board is unusable as a CAN interface as delivered.
 With a few short wire jumpers installed, it *will* work, however.
 Connect them as follows:
 
-- pin 24 (GP18) -> pin 4 (GP2): SCK line
-- pin 25 (GP19) -> pin 5 (GP3): SI line
-- pin 21 (GP16) -> pin 6 (GP4): SO line
-- CS hole -> pin 11 (GP9): CS line
+- CS hole -> pin 12 (GP9): CS line
 - INT hole -> pin 20 (GP15): interrupt line
 
-These jumper the SPI bus lines to the GPIO pins expected by the *canbus*
-library.
+These jumper the CS SPI bus line to the GPIO pin expected by the *canbus*
+library, and the MC2515 interrupt line to the RPP.
 *canbus* is agnostic about interrupt-driven MC2515 use, so the interrupt
 pin's jumper connection is your choice; 15 is used here (see the `INT_PIN`
 value in `can_test_intr.py` for its definition).
 Now the board is ready for use with the RPP.
+
+The SCK, SI and SO lines do _not_ need to be jumpered as long as you tell the
+RPP where the lines are available.
+The MicroPython SPI support in the RPP re-uses the previous settings for an
+SPI connection when a new one is set up, so after an initialization step it is
+ready for use.
 
 ## Preparation
 
@@ -234,7 +240,10 @@ of the expansion board (and download it to the RPP).
 
 # How it works
 
-Firstly, the test program configures the CAN interface by putting it into
+First, an SPI connection is defined using the proper pins for the expansion
+board.  This sets up the *canbus* package to use the appropriate pins for
+the board.
+Next, the test program configures the CAN interface by putting it into
 _loopback mode_.  This essentially connects the output of the bus to its
 own input, and therefore you don't need to have a running CAN bus to hook
 into to test out the board.

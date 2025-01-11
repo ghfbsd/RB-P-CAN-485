@@ -1,23 +1,21 @@
 # Raspberry Pi pico CAN bus test with Joy-IT expansion board,
 #    with or without interrupts.
-#
 
 # Import necessary libraries
 import sys, time
 from canbus import Can, CanError, CanMsg, CanMsgFlag
-from machine import Pin
+from machine import Pin, SPI
 
 POLL = False               # True for polling, False for interrupt
 
-INT_PIN = 15
+INT_PIN = 15               # INT comes from "INT" hole in board, goes to INT_PIN
+#                          # CS comes from "CS" hole in board, goes to GPIO9
+prep = SPI(0,              # configure SPI to use correct pins
+    sck=Pin(18), mosi=Pin(19), miso=Pin(16)
+)
 
 pico_led = Pin("LED")
 pico_led.off()
-#                          # INT comes from "INT" hole in board, goes to INT_PIN
-#                          # CS comes from "CS" hole in board, goes to GPIO9
-#dum16 = Pin(16, Pin.IN)   # SO from shield header, goes to GPIO4
-#dum18 = Pin(18, Pin.IN)   # SCK from shield header goes to GPIO2
-#dum19 = Pin(19, Pin.IN)   # SI from shield header, goes to GPIO3
 
 # Create an instance of the Can class to interface with the CAN bus
 can = Can()
@@ -44,7 +42,7 @@ else:
     msg = ' (***should be {:02x} [loopback mode]; ignoring***)'.format(ret|0x40)
 print("CAN status reg: %02x%s" % (ret,msg))
 
-def dump(can):
+def recv(can):
     # Receive data from the CAN bus; returns an error code and the message
     error, msg = can.recv()
     # Check if data was received without errors
@@ -79,7 +77,7 @@ while POLL:
     if error == CanError.ERROR_OK: # Check if the message was sent successfully
         print('{:3d} send normal------------------'.format(n))
     if can.checkReceive():
-        if dump(can) != CanError.ERROR_OK:
+        if recv(can) != CanError.ERROR_OK:
             print('{:3d} -----------------receive FAIL'.format(n))
 
     # Create an extended format frame CAN message
@@ -89,7 +87,7 @@ while POLL:
     if error == CanError.ERROR_OK: # Check if the message was sent successfully
         print('{:3d} send EFF---------------------'.format(n))
     if can.checkReceive():
-        if dump(can) != CanError.ERROR_OK:
+        if recv(can) != CanError.ERROR_OK:
             print('{:3d} -----------------receive FAIL'.format(n))
 
     pico_led.toggle()
@@ -112,7 +110,8 @@ def trigger(pin):
         can.clearInterrupts()
         return
     while can.checkReceive():
-        dump(can)
+        if recv(can) != CanError.ERROR_OK:
+            print('{:3d} -----------------receive FAIL'.format(n))
     can.clearInterrupts()
 
 print("Interrupt mask is %02x" % can.getInterruptMask())
