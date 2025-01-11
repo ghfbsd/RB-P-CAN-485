@@ -249,9 +249,9 @@ First, it defines a Python function called `trigger` to be called whenever
 there is new data received on the CAN bus.
 Then the program makes CAN messages of various lengths ranging from 0 to 8
 bytes, sending them out and listening for the result.
-When a message is available to be read, board signals the RPP by dropping
+When a message is available to be read, the board signals the RPP by dropping
 the level on the INT line, which is detected by using MicroPython's
-`irq()` method in the `Pin` connected to INT.
+`irq()` method on the `Pin` connected to INT.
 `irq` calls `trigger` which does the read and dumps the content of the message.
 The program shows the received message and its payload after each interrupt.
 Due to the loopback interface, it actually *receives* the message before it
