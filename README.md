@@ -130,21 +130,32 @@ Initialized successfully, polling mode.
 CAN status reg: 00 (***should be 40 [loopback mode]; ignoring***)
 ---------------------------------
   1 send normal------------------
+    CAN id: 0x123 (8 bytes): 12 34 56 78 9a bc de f0
   1 send EFF---------------------
+    CAN id: 0x12345678 (EFF) (8 bytes): 12 34 56 78 9a bc de f0
 ---------------------------------
   2 send normal------------------
+    CAN id: 0x123 (8 bytes): 12 34 56 78 9a bc de f0
   2 send EFF---------------------
+    CAN id: 0x12345678 (EFF) (8 bytes): 12 34 56 78 9a bc de f0
 ---------------------------------
   3 send normal------------------
+    CAN id: 0x123 (8 bytes): 12 34 56 78 9a bc de f0
   3 send EFF---------------------
+    CAN id: 0x12345678 (EFF) (8 bytes): 12 34 56 78 9a bc de f0
 ---------------------------------
   4 send normal------------------
+    CAN id: 0x123 (8 bytes): 12 34 56 78 9a bc de f0
   4 send EFF---------------------
+    CAN id: 0x12345678 (EFF) (8 bytes): 12 34 56 78 9a bc de f0
 ---------------------------------
   5 send normal------------------
+    CAN id: 0x123 (8 bytes): 12 34 56 78 9a bc de f0
   5 send EFF---------------------
+    CAN id: 0x12345678 (EFF) (8 bytes): 12 34 56 78 9a bc de f0
 ---------------------------------
   ...
+
 ```
 ### Sample output in interrupt mode.
 ```
@@ -229,8 +240,9 @@ own input, and therefore you don't need to have a running CAN bus to hook
 into to test out the board.
 
 In synchronous/polling mode, the program creates a CAN message and sends it.
-The program pays no attention to whether it was received; it only checks that
-the message was transmitted without an error.
+It checks that the message was transmitted without an error, and then
+expects it to appear on the loopback connection as a new input message,
+which it dumps along with its payload.
 
 The program's operation in interrupt mode is more interesting.
 First, it defines a Python function called `trigger` to be called whenever

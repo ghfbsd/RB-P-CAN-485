@@ -7,7 +7,7 @@ import sys, time
 from canbus import Can, CanError, CanMsg, CanMsgFlag
 from machine import Pin
 
-POLL = True                # True for polling, False for interrupt
+POLL = False               # True for polling, False for interrupt
 
 INT_PIN = 15
 
@@ -44,6 +44,25 @@ else:
     msg = ' (***should be {:02x} [loopback mode]; ignoring***)'.format(ret|0x40)
 print("CAN status reg: %02x%s" % (ret,msg))
 
+def dump(can):
+    # Receive data from the CAN bus; returns an error code and the message
+    error, msg = can.recv()
+    # Check if data was received without errors
+    if error == CanError.ERROR_OK:
+        # Print received message details
+        # Print the CAN ID in hexadecimal format and whether RTR format
+        data = ' '.join(           # put space between every octet
+            map(''.join, zip(*[iter(msg.data.hex())]*2))
+        )
+        print("    CAN id: %#x%s%s (%d bytes): %s" % (
+            msg.can_id,
+            ' (RTR)' if msg.is_remote_frame else '',
+            ' (EFF)' if msg.is_extended_id else '',
+            msg.dlc,
+            data if msg.dlc > 0 else ''
+        ))
+    return error
+
 # Data to be sent over the CAN bus in bytes format
 data = b"\x12\x34\x56\x78\x9A\xBC\xDE\xF0"
 n = 0
@@ -59,6 +78,9 @@ while POLL:
     error = can.send(msg) # Send the CAN message and store the error status
     if error == CanError.ERROR_OK: # Check if the message was sent successfully
         print('{:3d} send normal------------------'.format(n))
+    if can.checkReceive():
+        if dump(can) != CanError.ERROR_OK:
+            print('{:3d} -----------------receive FAIL'.format(n))
 
     # Create an extended format frame CAN message
     # EFF flag indicates an extended frame format
@@ -66,6 +88,9 @@ while POLL:
     error = can.send(msg) # Send the CAN message and store the error status
     if error == CanError.ERROR_OK: # Check if the message was sent successfully
         print('{:3d} send EFF---------------------'.format(n))
+    if can.checkReceive():
+        if dump(can) != CanError.ERROR_OK:
+            print('{:3d} -----------------receive FAIL'.format(n))
 
     pico_led.toggle()
     time.sleep(1) # Wait for 1 second before sending the next set of messages
@@ -87,22 +112,7 @@ def trigger(pin):
         can.clearInterrupts()
         return
     while can.checkReceive():
-        # Receive data from the CAN bus; returns an error code and the message
-        error, msg = can.recv()
-        # Check if data was received without errors
-        if error == CanError.ERROR_OK:
-            # Print received message details
-            # Print the CAN ID in hexadecimal format and whether RTR format
-            data = ' '.join(           # put space between every octet
-                map(''.join, zip(*[iter(msg.data.hex())]*2))
-            )
-            print("    CAN id: %#x%s%s (%d bytes): %s" % (
-                msg.can_id,
-                ' (RTR)' if msg.is_remote_frame else '',
-                ' (EFF)' if msg.is_extended_id else '',
-                msg.dlc,
-                data if msg.dlc > 0 else ''
-            ))
+        dump(can)
     can.clearInterrupts()
 
 print("Interrupt mask is %02x" % can.getInterruptMask())
