@@ -88,14 +88,14 @@ Connect them as follows:
 - INT hole -> pin 20 (GP15): interrupt line
 
 These jumper the CS SPI bus line to the GPIO pin expected by the *canbus*
-library, and the MC2515 interrupt line to the RPP.
-*canbus* is agnostic about interrupt-driven MC2515 use, so the interrupt
+library, and the MCP2515 interrupt line to the RPP.
+*canbus* is agnostic about interrupt-driven MCP2515 use, so the interrupt
 pin's jumper connection is your choice; 15 is used here (see the `INT_PIN`
 value in `can_test_intr.py` for its definition).
 Now the board is ready for use with the RPP.
 
 The SCK, SI and SO lines do _not_ need to be jumpered as long as you tell the
-RPP where the lines are available.
+RPP on which pins the lines are available.
 The MicroPython SPI support in the RPP re-uses the previous settings for an
 SPI connection when a new one is set up, so after an initialization step it is
 ready for use.
