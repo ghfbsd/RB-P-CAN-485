@@ -110,8 +110,9 @@ ready for use.
 [rshell](https://forum.micropython.org/viewtopic.php?t=708) and
 [Thonny](https://thonny.org/) seem to be popular choices).
 
-* Download *canbus* to the RPP (with _rshell_, use `rsync canbus /pyboard` after
-`cd MicroPython_CAN_BUS_MCP2515`; with _Thonny_, use
+* Download *canbus* to the RPP (with _rshell_, use
+`cd MicroPython_CAN_BUS_MCP2515` and then
+`rsync canbus /pyboard/canbus` ; with _Thonny_, use
 the `Tools -> Manage Packages menu`, search for "MicroPython_CAN_BUS_MCP2515" and install it to the target board).
 
 * Look at the `can_test_intr.py` source code.
@@ -121,10 +122,10 @@ The simplest is by synchronous polling.
 Look at the source code and make sure the `POLL` variable has the value `True`.
 If not, change it and save the updated code.
 
-* Download `can_test_intr.py` to the RPP (with _rshell_ use `cp`;
-not sure what to do for _Thonny_).
+* Download `can_test_intr.py` to the RPP (with _rshell_ use `cp can_test_intr.py /pyboard`; not sure what to do for _Thonny_).
 
-* Run `can_test_intr.py`.
+* Run `can_test_intr.py`, by going into REPL mode and then typing,
+`execfile('can_test_intr.py')`.
 Compare your output with the sample output below.
 The program will flash the LED on the RPP once a second.
 It also runs forever, and you must interrupt it to stop it.
@@ -163,6 +164,13 @@ CAN status reg: 00 (***should be 40 [loopback mode]; ignoring***)
   ...
 
 ```
+### Testing interrupt mode.
+
+Modify the program and set `POLL` to `False` to test the interrupt features
+of the expansion board.  Download it to the RPP and run it like before.
+
+The program runs forever; you must interrupt it to stop it.
+
 ### Sample output in interrupt mode.
 ```
 
@@ -228,15 +236,9 @@ Interrupt mask is a3
 ```
 MicroPython v1.24.1 on 2024-11-29; Raspberry Pi Pico W with RP2040
 ```
-
 - Some MCP2515 clones apparently do not report the interface status
 correctly (see the message `***should be 40 [loopback mode]; ignoring***`).
 For the test program, this is harmless.
-
-- Modify the program and set `POLL` to `False` to test the interrupt features
-of the expansion board (and download it to the RPP).
-
-- The program runs forever; you must interrupt it to stop it.
 
 # How it works
 
