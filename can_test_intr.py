@@ -8,7 +8,7 @@ from machine import Pin, SPI
 
 POLL = False               # True for polling, False for interrupt
 
-INT_PIN = 15               # INT comes from "INT" hole in board, goes to INT_PIN
+INT_PIN = 20               # INT comes from "INT" hole in board, goes to INT_PIN
 #                          # CS comes from "CS" hole in board, goes to GPIO9
 prep = SPI(0,              # configure SPI to use correct pins
     sck=Pin(18), mosi=Pin(19), miso=Pin(16)
@@ -18,7 +18,7 @@ pico_led = Pin("LED")
 pico_led.off()
 
 # Create an instance of the Can class to interface with the CAN bus
-can = Can()
+can = Can(spics=17)
 
 # Initialize the CAN interface.  Begin method initializes the CAN interface
 #    and returns a status code

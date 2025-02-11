@@ -84,8 +84,8 @@ the board is unusable as a CAN interface as delivered.
 With a few short wire jumpers installed, it *will* work, however.
 Connect them as follows:
 
-- CS hole -> pin 12 (GP9): CS line
-- INT hole -> pin 20 (GP15): interrupt line
+- CS hole -> pin 22 (GP17): CS line
+- INT hole -> pin 26 (GP20): interrupt line
 
 These jumper the CS SPI bus line to the GPIO pin expected by the *canbus*
 library, and the MCP2515 interrupt line to the RPP.
