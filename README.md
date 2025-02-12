@@ -90,8 +90,9 @@ Connect them as follows:
 These jumper the CS SPI bus line to the GPIO pin expected by the *canbus*
 library, and the MCP2515 interrupt line to the RPP.
 *canbus* is agnostic about interrupt-driven MCP2515 use, so the interrupt
-pin's jumper connection is your choice; 15 is used here (see the `INT_PIN`
-value in `can_test_intr.py` for its definition).
+pin's jumper connection is your choice; 20 is used here to keep the wires
+close to one another (see the `INT_PIN`
+value in `can_test_intr.py` for the pin's definition).
 Now the board is ready for use with the RPP.
 
 The SCK, SI and SO lines do _not_ need to be jumpered as long as you tell the
