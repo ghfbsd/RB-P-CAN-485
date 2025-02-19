@@ -1,24 +1,36 @@
 # Raspberry Pi pico CAN bus test with Joy-IT expansion board,
 #    with or without interrupts.
+# Also should work with Waveshare Pico-CAN-B board (but as yet untested)
 
 # Import necessary libraries
 import sys, time
 from canbus import Can, CanError, CanMsg, CanMsgFlag
 from machine import Pin, SPI
 
-POLL = False               # True for polling, False for interrupt
+POLL = True                # True for polling, False for interrupt
 
 INT_PIN = 20               # INT comes from "INT" hole in board, goes to INT_PIN
-#                          # CS comes from "CS" hole in board, goes to GPIO9
+#                          # CS comes from "CS" hole in board, goes to SPI_CS
+SPI_CS = 17
+SPI_SCK = 18
+SPI_MOSI = 19
+SPI_MISO = 16
+
+# These should work with a Waveshare Pico-CAN-B board; use with INT_PIN = 21
+# SPI_CS = 5               # untested
+# SPI_SCK = 6              # untested
+# SPI_MOSI = 7             # untested
+# SPI_MISO = 4             # untested
+
 prep = SPI(0,              # configure SPI to use correct pins
-    sck=Pin(18), mosi=Pin(19), miso=Pin(16)
+    sck=Pin(SPI_SCK), mosi=Pin(SPI_MOSI), miso=Pin(SPI_MISO)
 )
 
 pico_led = Pin("LED")
 pico_led.off()
 
 # Create an instance of the Can class to interface with the CAN bus
-can = Can(spics=17)
+can = Can(spics=SPI_CS)
 
 # Initialize the CAN interface.  Begin method initializes the CAN interface
 #    and returns a status code
