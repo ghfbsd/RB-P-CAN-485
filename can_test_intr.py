@@ -9,18 +9,24 @@ from machine import Pin, SPI
 
 POLL = True                # True for polling, False for interrupt
 
-INT_PIN = 20               # INT comes from "INT" hole in board, goes to INT_PIN
-#                          # CS comes from "CS" hole in board, goes to SPI_CS
-SPI_CS = 17
-SPI_SCK = 18
-SPI_MOSI = 19
-SPI_MISO = 16
+CANBOARD = 'JI'            # Board choice: 'JI' or 'WS'
 
-# These should work with a Waveshare Pico-CAN-B board; use with INT_PIN = 21
-# SPI_CS = 5               # untested
-# SPI_SCK = 6              # untested
-# SPI_MOSI = 7             # untested
-# SPI_MISO = 4             # untested
+if CANBOARD == 'JI':
+   # These pin assignments are appropriate for a RB-P-CAN-485 Joy-IT board
+   INT_PIN = 20                  # Interrupt pin for CAN board
+   SPI_CS = 17
+   SPI_SCK = 18
+   SPI_MOSI = 19
+   SPI_MISO = 16
+elif CANBOARD == 'WS':
+   # These pin assignments are appropriate for a Waveshare Pico-CAN-B board
+   INT_PIN = 21                  # Interrupt pin for CAN board
+   SPI_CS = 5
+   SPI_SCK = 6
+   SPI_MOSI = 7
+   SPI_MISO = 4
+else:
+   raise RuntimeError('***%s is an unsupported CAN board***' % CANBOARD)
 
 prep = SPI(0,              # configure SPI to use correct pins
     sck=Pin(SPI_SCK), mosi=Pin(SPI_MOSI), miso=Pin(SPI_MISO)

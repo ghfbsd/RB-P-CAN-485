@@ -240,9 +240,9 @@ MicroPython v1.24.1 on 2024-11-29; Raspberry Pi Pico W with RP2040
 - Some MCP2515 clones apparently do not report the interface status
 correctly (see the message `***should be 40 [loopback mode]; ignoring***`).
 For the test program, this is harmless.
-- The test program should also work with a Waveshare Pico-CAN-B board provided
-that the pin assignments in the code are changed.  (This is as yet untested,
-but should work based on the board's datasheet.)
+- The test program also works with a Waveshare Pico-CAN-B board.
+Change the value of `CANBOARD` to `'WS'` if you're using one.
+Then follow the testing instructions.
 
 # How it works
 
