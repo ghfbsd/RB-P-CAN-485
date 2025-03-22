@@ -135,7 +135,6 @@ It also runs forever, and you must interrupt it to stop it.
 ```
 
 Initialized successfully, polling mode.
-CAN status reg: 00 (***should be 40 [loopback mode]; ignoring***)
 ---------------------------------
   1 send normal------------------
     CAN id: 0x123 (8 bytes): 12 34 56 78 9a bc de f0
@@ -176,7 +175,6 @@ The program runs forever; you must interrupt it to stop it.
 ```
 
 Initialized successfully, interrupt mode.
-CAN status reg: 00 (***should be 40 [loopback mode]; ignoring***)
 Interrupt mask is a3
 ---------------------------------
   1 send normal------------------
