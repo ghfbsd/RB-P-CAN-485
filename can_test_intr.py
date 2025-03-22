@@ -53,13 +53,6 @@ if ret != CanError.ERROR_OK: # Check if the initialization was successful
     print("Error setting CAN loopback!")
     sys.exit(1)
 
-ret = can.getStatus()
-if ret & 0x40 != 0:
-    msg = ''
-else:
-    msg = ' (***should be {:02x} [loopback mode]; ignoring***)'.format(ret|0x40)
-print("CAN status reg: %02x%s" % (ret,msg))
-
 def recv(can):
     # Receive data from the CAN bus; returns an error code and the message
     error, msg = can.recv()
