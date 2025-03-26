@@ -9,16 +9,16 @@ from machine import Pin, SPI
 
 POLL = True                # True for polling, False for interrupt
 
-CANBOARD = 'JI'            # Board choice: 'JI' or 'WS'
+_CANBOARD = const('JI')    # Board choice: 'JI' or 'WS'
 
-if CANBOARD == 'JI':
+if _CANBOARD == 'JI':
    # These pin assignments are appropriate for a RB-P-CAN-485 Joy-IT board
    INT_PIN = 20                  # Interrupt pin for CAN board
    SPI_CS = 17
    SPI_SCK = 18
    SPI_MOSI = 19
    SPI_MISO = 16
-elif CANBOARD == 'WS':
+elif _CANBOARD == 'WS':
    # These pin assignments are appropriate for a Waveshare Pico-CAN-B board
    INT_PIN = 21                  # Interrupt pin for CAN board
    SPI_CS = 5
