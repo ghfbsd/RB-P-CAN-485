@@ -26,7 +26,7 @@ elif _CANBOARD == 'WS':
    SPI_MOSI = 7
    SPI_MISO = 4
 else:
-   raise RuntimeError('***%s is an unsupported CAN board***' % CANBOARD)
+   raise RuntimeError('***%s is an unsupported CAN board***' % _CANBOARD)
 
 prep = SPI(0,              # configure SPI to use correct pins
     sck=Pin(SPI_SCK), mosi=Pin(SPI_MOSI), miso=Pin(SPI_MISO)
