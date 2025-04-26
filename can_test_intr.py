@@ -6,52 +6,80 @@
 import sys, time
 from canbus import Can, CanError, CanMsg, CanMsgFlag
 from machine import Pin, SPI
+from collections import namedtuple
 
 POLL = True                # True for polling, False for interrupt
 
-_CANBOARD = const('JI')    # Board choice: 'JI' or 'WS'
+_CANBOARD = const('auto')  # Board choice: 'auto' for auto-detect or
+                           # 'JI' or 'WS'
 
-if _CANBOARD == 'JI':
+CAN_pins = namedtuple('CAN pins',
+   ['INT_PIN','SPI_CS', 'SPI_SCK', 'SPI_MOSI', 'SPI_MISO', 'name']
+)
+pins_JI = CAN_pins(
    # These pin assignments are appropriate for a RB-P-CAN-485 Joy-IT board
-   INT_PIN = 20                  # Interrupt pin for CAN board
-   SPI_CS = 17
-   SPI_SCK = 18
-   SPI_MOSI = 19
+   name = 'Joy-IT',
+   INT_PIN = 20,                 # Interrupt pin for CAN board
+   SPI_CS = 17,
+   SPI_SCK = 18,
+   SPI_MOSI = 19,
    SPI_MISO = 16
-elif _CANBOARD == 'WS':
+)
+pins_WS = CAN_pins(
    # These pin assignments are appropriate for a Waveshare Pico-CAN-B board
-   INT_PIN = 21                  # Interrupt pin for CAN board
-   SPI_CS = 5
-   SPI_SCK = 6
-   SPI_MOSI = 7
+   name = 'Waveshare',
+   INT_PIN = 21,                 # Interrupt pin for CAN board
+   SPI_CS = 5,
+   SPI_SCK = 6,
+   SPI_MOSI = 7,
    SPI_MISO = 4
+)
+boards = dict(
+   WS = pins_WS,
+   JI = pins_JI
+)
+
+if _CANBOARD == 'auto':
+   for bd in boards:
+      # Check if the initialization is successful
+      pin = boards[bd]
+      prep = SPI(0,              # configure SPI to use this board's pins
+          sck=Pin(pin.SPI_SCK), mosi=Pin(pin.SPI_MOSI), miso=Pin(pin.SPI_MISO)
+      )
+      # Create an instance of the Can class to interface with the CAN bus
+      can = Can(spics=pin.SPI_CS)
+      if can.begin() == CanError.ERROR_OK:
+         board = pin.name
+         break
+   else:
+      raise RuntimeError(
+         "***Can't auto-detect board; set explicit board name***"
+      )
+elif _CANBOARD in boards:        # Explicit board choice?
+   pin = boards[_CANBOARD]
+   prep = SPI(0,                 # configure SPI to use this board's pins
+       sck=Pin(pin.SPI_SCK), mosi=Pin(pin.SPI_MOSI), miso=Pin(pin.SPI_MISO)
+   )
+   # Create an instance of the Can class to interface with the CAN bus
+   can = Can(spics=pin.SPI_CS)
+   if can.begin() != CanError.ERROR_OK:
+      raise RuntimeError("Error initializing %s CAN board - check type!" %
+         pin.name
+      )
+   board = pin.name
 else:
    raise RuntimeError('***%s is an unsupported CAN board***' % _CANBOARD)
-
-prep = SPI(0,              # configure SPI to use correct pins
-    sck=Pin(SPI_SCK), mosi=Pin(SPI_MOSI), miso=Pin(SPI_MISO)
-)
 
 pico_led = Pin("LED")
 pico_led.off()
 
-# Create an instance of the Can class to interface with the CAN bus
-can = Can(spics=SPI_CS)
-
-# Initialize the CAN interface.  Begin method initializes the CAN interface
-#    and returns a status code
-ret = can.begin()
-if ret != CanError.ERROR_OK: # Check if the initialization was successful
-    print("Error initializing CAN!")
-    sys.exit(1)
-print("Initialized successfully, %s mode." %
-    ('polling' if POLL else 'interrupt')
+print("Initialized %s board successfully, %s mode." %
+    (board, 'polling' if POLL else 'interrupt')
 )
 
 ret = can.setLoopback()
 if ret != CanError.ERROR_OK: # Check if the initialization was successful
-    print("Error setting CAN loopback!")
-    sys.exit(1)
+    raise RuntimeError("Error setting CAN loopback!")
 
 def recv(can):
     # Receive data from the CAN bus; returns an error code and the message

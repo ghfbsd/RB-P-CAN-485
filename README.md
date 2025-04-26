@@ -236,7 +236,9 @@ Interrupt mask is a3
 MicroPython v1.24.1 on 2024-11-29; Raspberry Pi Pico W with RP2040
 ```
 - The test program also works with a Waveshare Pico-CAN-B board.
-Change the value of `CANBOARD` to `'WS'` if you're using one.
+It will auto-detect the presence of the type of board.  If the
+auto-detect does not work, change the value of `_CANBOARD` to `'WS'` or
+to `'JI'` to explicitly choose the Waveshare or Joy-IT board, respectively.
 Then follow the testing instructions.
 
 # How it works
