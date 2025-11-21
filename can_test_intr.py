@@ -8,7 +8,7 @@ from canbus import Can, CanError, CanMsg, CanMsgFlag
 from machine import Pin, SPI
 from collections import namedtuple
 
-POLL = True                # True for polling, False for interrupt
+POLL = False               # True for polling, False for interrupt
 
 _CANBOARD = const('auto')  # Board choice: 'auto' for auto-detect or
                            # 'JI' or 'WS'
@@ -155,7 +155,7 @@ def trigger(pin):
 
 print("Interrupt mask is %02x" % can.getInterruptMask())
 
-pin = Pin(INT_PIN,Pin.IN,Pin.PULL_UP)
+pin = Pin(pin.INT_PIN,Pin.IN,Pin.PULL_UP)
 pin.irq(trigger=Pin.IRQ_FALLING,handler=trigger)
 
 try:
