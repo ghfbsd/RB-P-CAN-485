@@ -108,7 +108,7 @@ ready for use.
 * Connect to your RPP with the USB cable.
 
 * Get your favorite RPP development platform/IDE running (
-[rshell](https://forum.micropython.org/viewtopic.php?t=708) and
+[rshell](https://github.com/dhylands/rshell) and
 [Thonny](https://thonny.org/) seem to be popular choices).
 
 * Download *canbus* to the RPP (with _rshell_, use
